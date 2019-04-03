@@ -3,9 +3,9 @@ const config = require('config');
 const winston = require('./config/winston');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const cloudProtocol = require('azure-iot-device-mqtt').Mqtt;
-const cloudClient = require('azure-iot-device').Client;
-const cloudMessage = require('azure-iot-device').Message;
+var Protocol = require('azure-iot-device-mqtt').Mqtt;
+var Client = require('azure-iot-device').Client;
+var Message = require('azure-iot-device').Message;
 
 const app = express();
 app.use(morgan('combined', { stream: winston.stream }));
@@ -17,7 +17,6 @@ app.listen(3000, () => {
 const azureConnection = config.get('AgedCare.azureConnection');
 
 
-
 app.post('/device/:id', (req, res) => {
     const deviceId = req.params.id;
     winston.info('Device Id ' + deviceId);
@@ -26,11 +25,25 @@ app.post('/device/:id', (req, res) => {
 
     // create client
     const connection = azureConnection.connectionString + ';DeviceId=' + deviceId;
-    winston.info('Connection : ' + connection);
-    const client = cloudClient.fromConnectionString(connection,cloudProtocol);
-    
+    //var connectionString = 'HostName=Itbyuhub.azure-devices.net;DeviceId=agedcaresensor;SharedAccessKey=HLDj0WKExPKwIfLE1gOJQt+PdXwQt9rOZlwij337Tkw=';
+   // winston.info('Connection : ' + connection);
+    const client = Client.fromConnectionString(connection,Protocol);
+    /*client.open(function (err) {
+        if (err) {
+            winston.info('Could not connect: ' + err);
+        } else {
+            winston.info('Client connected');
+        }
+        client.close(function() {
+            winston.info('Client closed');
+        });
+      });*/
+  
     // send azure iot message callback
     const messageCallBack = function (err) {
+
+        winston.info('Start callback');
+
         if(err) {
             winston.error('Could not connect to Azure IOT Hub: ' + err.message);
         } else {
@@ -41,7 +54,7 @@ app.post('/device/:id', (req, res) => {
             });
 
             const data = JSON.stringify(bodyData);
-            const message = new cloudMessage(data);
+            const message = new Message(data);
             winston.info('Sending message ' + message.getData());
             client.sendEvent(message, printResultFor('send'));
 
@@ -55,8 +68,9 @@ app.post('/device/:id', (req, res) => {
             });
         }
     }
-
+   
     client.open(messageCallBack);
+
 
     return res.send('Received a POST HTTP method from device ' + deviceId);
 });

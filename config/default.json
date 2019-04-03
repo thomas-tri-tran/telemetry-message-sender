@@ -1,7 +1,7 @@
 {
     "AgedCare": {
       "azureConnection": {
-        "connectionString": "HostName=Itbyuhub.azure-devices.net;SharedAccessKey=MOT6rEv7wbpR8LT1pSG55Wbr5Av/a1oZIobHzVHwqrE="
+        "connectionString": ""
       }
     }
 }
