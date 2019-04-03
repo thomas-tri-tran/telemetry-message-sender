@@ -20,6 +20,7 @@ const azureConnection = config.get('AgedCare.azureConnection');
 
 app.post('/device/:id', (req, res) => {
     const deviceId = req.params.id;
+    winston.info('Device Id ' + deviceId);
     const bodyData = req.body;
     winston.info('Testing ' + bodyData);
 
@@ -38,7 +39,7 @@ app.post('/device/:id', (req, res) => {
                 client.complete(msg, printResultFor('completed'));
             });
 
-            const data = JSON.stringify({'deviceId': deviceId, 'payload': bodyData});
+            const data = JSON.stringify(bodyData);
             const message = new cloudMessage(data);
             winston.info('Sending message ' + message.getData());
             client.sendEvent(message, printResultFor('send'));
