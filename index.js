@@ -25,7 +25,8 @@ app.post('/device/:id', (req, res) => {
     winston.info('Testing ' + bodyData);
 
     // create client
-    const connection = azureConnection.connectionString + 'DeviceId=' + deviceId;
+    const connection = azureConnection.connectionString + ';DeviceId=' + deviceId;
+    winston.info('Connection : ' + connection);
     const client = cloudClient.fromConnectionString(connection,cloudProtocol);
     
     // send azure iot message callback
