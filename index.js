@@ -22,7 +22,7 @@ app.post('/device/:id', (req, res) => {
     const deviceId = req.params.id;
     winston.info('Device Id ' + deviceId);
     const bodyData = req.body;
-    winston.info('Testing ' + bodyData);
+    winston.info('Data ' + JSON.stringify(bodyData));
 
     // create client
     const connection = azureConnection.connectionString + ';DeviceId=' + deviceId;
